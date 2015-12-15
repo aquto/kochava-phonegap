@@ -18,26 +18,30 @@
 - (void) KochavaConnectionDidFinishLoading:(NSDictionary *)responseDict;
 - (void) KochavaConnectionDidFailWithError:(NSError *)error;
 - (void) KochavaRetrieveAttribution:(NSDictionary *)attributionResponseDict;
-- (void) KochavaiBeaconMonitorLocations:(NSDictionary *)iBeaconLocations;
 - (void) KochavaInitResult:(NSDictionary *)initResult;
 - (void) KochavaInitialResult:(NSDictionary *)initialResult;
+- (void) KochavaBackgroundFlushCompleted;
 @end
 
 
 @protocol KochavaLocationManagerDelegate;
 @protocol KochavaLocationManagerDelegate <NSObject>
 @optional
-- (void) locationUpdate:(CLLocation*)newLocation;
-- (void) iBeaconBarrierCrossed:(NSDictionary*)iBeaconBarrierAction;
+- (void) currentLocationUpdate:(NSDictionary*)newLocation;
 @end
 
+@protocol KochavaiAdAttributionDelegate;
+@protocol KochavaiAdAttributionDelegate <NSObject>
+@optional
+- (void) iAdAttributionData:(NSDictionary*)iAdAttributionPayload :(bool)isUnknown;
+@end
 
 #pragma mark - -------------------------------------
 #pragma mark - Kochava Client
 
 @protocol KochavaTrackerClientDelegate;
 
-@interface KochavaTracker : NSObject <KochavaNetworkAccessDelegate, KochavaLocationManagerDelegate>
+@interface KochavaTracker : NSObject <KochavaNetworkAccessDelegate, KochavaLocationManagerDelegate, KochavaiAdAttributionDelegate>
 
 #pragma mark - Swift Bridge
 - (KochavaTracker*) swiftInitKochavaWithParams:(id)initDict;
@@ -48,7 +52,6 @@
 - (void) swiftSetLimitAdTracking:(bool)limitAdTracking;
 - (NSString*) swiftRetrieveAttribution;
 - (void) swiftSendDeepLink:(id)url :(id)sourceApplication;
-- (bool) swiftPresentInitAd;
 
 
 #pragma mark - ObjC
@@ -67,8 +70,8 @@
 - (void) setLimitAdTracking:(bool)limitAdTracking;
 - (id) retrieveAttribution;
 - (void) sendDeepLink:(NSURL*)url :(NSString*)sourceApplication;
+
 - (NSString*) getKochavaDeviceId;
-- (bool) presentInitAd;
 
 // Apple Watch
 - (void) handleWatchEvents;
@@ -86,32 +89,6 @@
 @protocol KochavaTrackerClientDelegate <NSObject>
 @optional
 - (void) Kochava_attributionResult:(NSDictionary*)attributionResult;
-- (void) Kochava_presentInitAd:(bool)presentInitAdResult;
-
-- (void) Kochava_iBeaconBarrierCrossed:(NSDictionary*)iBeaconBarrierAction;
-- (void) swiftDelegate:(int)testInt;
-@end
-
-
-
-#pragma mark - -------------------------------------
-#pragma mark - Ad Client
-
-@protocol KochavaAdClientDelegate;
-
-@interface KochavaAdClient : UIView <UIWebViewDelegate, UIGestureRecognizerDelegate, KochavaNetworkAccessDelegate>
-
-- (void) displayAdWebView:(UIViewController*)callingController :(UIView*)callingView :(bool)isInterstitial;
-- (void) presentClickAd;
-
-@property (nonatomic, assign) id <KochavaAdClientDelegate> adDelegate;
-@end
-
-@protocol KochavaAdClientDelegate <NSObject>
-@optional
-- (void) Kochava_adLoaded:(KochavaAdClient*)adView :(bool)isInterstitial;
-- (void) Kochava_fullScreenAdWillLoad:(KochavaAdClient*)adView;
-- (void) Kochava_fullScreenAdDidUnload:(KochavaAdClient*)adView;
 
 @end
 
