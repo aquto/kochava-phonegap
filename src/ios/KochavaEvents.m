@@ -209,7 +209,13 @@
 		[[attributionResult objectForKey:@"attribution"] isEqualToString:@"false"] )		{
 
 		NSString *jsStatement = [NSString stringWithFormat:@"window.attributionNotification.notificationCallback('%@');",@"false"];
-		[self.webView stringByEvaluatingJavaScriptFromString:jsStatement];
+		if ([self.webView respondsToSelector:@selector(stringByEvaluatingJavaScriptFromString:)]) {
+			// Cordova-iOS pre-4
+			[self.webView performSelectorOnMainThread:@selector(stringByEvaluatingJavaScriptFromString:) withObject:jsStatement waitUntilDone:NO];
+		} else {
+			// Cordova-iOS 4+
+			[self.webView performSelectorOnMainThread:@selector(evaluateJavaScript:completionHandler:) withObject:jsStatement waitUntilDone:NO];
+		}
 	}
 	else	{
 		NSError *error;
@@ -220,11 +226,23 @@
 		if (jsonData) {
 			NSString *jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
 			NSString *jsStatement = [NSString stringWithFormat:@"window.attributionNotification.notificationCallback('%@');",jsonString];
-			[self.webView stringByEvaluatingJavaScriptFromString:jsStatement];
+			if ([self.webView respondsToSelector:@selector(stringByEvaluatingJavaScriptFromString:)]) {
+				// Cordova-iOS pre-4
+				[self.webView performSelectorOnMainThread:@selector(stringByEvaluatingJavaScriptFromString:) withObject:jsStatement waitUntilDone:NO];
+			} else {
+				// Cordova-iOS 4+
+				[self.webView performSelectorOnMainThread:@selector(evaluateJavaScript:completionHandler:) withObject:jsStatement waitUntilDone:NO];
+			}
 		}
 		else	{
 			NSString *jsStatement = [NSString stringWithFormat:@"window.attributionNotification.notificationCallback('%@');",@"false"];
-			[self.webView stringByEvaluatingJavaScriptFromString:jsStatement];
+			if ([self.webView respondsToSelector:@selector(stringByEvaluatingJavaScriptFromString:)]) {
+				// Cordova-iOS pre-4
+				[self.webView performSelectorOnMainThread:@selector(stringByEvaluatingJavaScriptFromString:) withObject:jsStatement waitUntilDone:NO];
+			} else {
+				// Cordova-iOS 4+
+				[self.webView performSelectorOnMainThread:@selector(evaluateJavaScript:completionHandler:) withObject:jsStatement waitUntilDone:NO];
+			}
 		}
 	}
 }
