@@ -23,7 +23,7 @@
 	<!-- android -->
     <platform name="android">
 	
-		<dependency id="com.google.playservices" />
+		<framework src="com.google.android.gms:play-services-ads:+" />
 
 		<config-file parent="/*" target="res/xml/config.xml">
 			<feature name="KochavaEvents">
