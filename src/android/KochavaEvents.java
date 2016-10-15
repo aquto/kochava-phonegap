@@ -313,12 +313,17 @@ public class KochavaEvents extends CordovaPlugin
         	});
             return true;
         }
-        if (action.equals("SpatialEvent")) 
+		if (action.equals("TrackEventWithReceipt"))
+		{
+			Log.i(LOGTAG,"(TrackEventWithReceipt call) this event doesn't exist on Android for Kochava at this time.");
+			return false;
+		}
+        if (action.equals("SpatialEvent"))
         {
         	if(kochavaObject == null)
-    		{	
+    		{
         		Log.i(LOGTAG,"(SpatialEvent call) Kochava library has not been initialized yet");
-        		return false;        		
+        		return false;
     		}
         	
         	String tempeventName;

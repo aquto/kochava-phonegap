@@ -39,6 +39,10 @@ var Kochava = {
 	DeeplinkEvent:function(uri, callingApp)	{
 		callCordova('DeeplinkEvent', uri, callingApp);
 	},
+
+	EventWithReceipt:function(eventName, eventValue, eventReceipt)	{
+		callCordova('TrackEventWithReceipt', eventName, eventValue, eventReceipt);
+	},
 		
 	EnableLogging:function(state){
 		callCordova('EnableLogging', state);

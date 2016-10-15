@@ -68,6 +68,24 @@
 		[self.commandDelegate sendPluginResult:pluginResult callbackId:args.callbackId];
 	}];
 }
+
+- (void)TrackEventWithReceipt:(CDVInvokedUrlCommand*)args		{
+	
+	[self.commandDelegate runInBackground:^{
+		
+		NSString *eventName = [args.arguments objectAtIndex:0];
+		NSString *eventValue = [args.arguments objectAtIndex:1];
+		NSString *eventReceipt = [args.arguments objectAtIndex:2];
+		
+		
+		[kochavaTracker trackEvent:eventName withValue:eventValue andReceipt:eventReceipt];
+		
+		CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:@"EventMethod call sucess"];
+		
+		[self.commandDelegate sendPluginResult:pluginResult callbackId:args.callbackId];
+	}];
+}
+
 - (void)SpatialEvent:(CDVInvokedUrlCommand*)args	{
 
 	[self.commandDelegate runInBackground:^{
@@ -209,12 +227,11 @@
 		[[attributionResult objectForKey:@"attribution"] isEqualToString:@"false"] )		{
 
 		NSString *jsStatement = [NSString stringWithFormat:@"window.attributionNotification.notificationCallback('%@');",@"false"];
-		if ([self.webView respondsToSelector:@selector(stringByEvaluatingJavaScriptFromString:)]) {
-			// Cordova-iOS pre-4
-			[self.webView performSelectorOnMainThread:@selector(stringByEvaluatingJavaScriptFromString:) withObject:jsStatement waitUntilDone:NO];
-		} else {
-			// Cordova-iOS 4+
-			[self.webView performSelectorOnMainThread:@selector(evaluateJavaScript:completionHandler:) withObject:jsStatement waitUntilDone:NO];
+		if ([self.webView isKindOfClass:[UIWebView class]]) {
+			UIWebView *localWebView = (UIWebView*)self.webView;
+			dispatch_async(dispatch_get_main_queue(), ^{
+				[localWebView stringByEvaluatingJavaScriptFromString:jsStatement];
+			});
 		}
 	}
 	else	{
@@ -226,22 +243,20 @@
 		if (jsonData) {
 			NSString *jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
 			NSString *jsStatement = [NSString stringWithFormat:@"window.attributionNotification.notificationCallback('%@');",jsonString];
-			if ([self.webView respondsToSelector:@selector(stringByEvaluatingJavaScriptFromString:)]) {
-				// Cordova-iOS pre-4
-				[self.webView performSelectorOnMainThread:@selector(stringByEvaluatingJavaScriptFromString:) withObject:jsStatement waitUntilDone:NO];
-			} else {
-				// Cordova-iOS 4+
-				[self.webView performSelectorOnMainThread:@selector(evaluateJavaScript:completionHandler:) withObject:jsStatement waitUntilDone:NO];
+			if ([self.webView isKindOfClass:[UIWebView class]]) {
+				UIWebView *localWebView = (UIWebView*)self.webView;
+				dispatch_async(dispatch_get_main_queue(), ^{
+					[localWebView stringByEvaluatingJavaScriptFromString:jsStatement];
+				});
 			}
 		}
 		else	{
 			NSString *jsStatement = [NSString stringWithFormat:@"window.attributionNotification.notificationCallback('%@');",@"false"];
-			if ([self.webView respondsToSelector:@selector(stringByEvaluatingJavaScriptFromString:)]) {
-				// Cordova-iOS pre-4
-				[self.webView performSelectorOnMainThread:@selector(stringByEvaluatingJavaScriptFromString:) withObject:jsStatement waitUntilDone:NO];
-			} else {
-				// Cordova-iOS 4+
-				[self.webView performSelectorOnMainThread:@selector(evaluateJavaScript:completionHandler:) withObject:jsStatement waitUntilDone:NO];
+			if ([self.webView isKindOfClass:[UIWebView class]]) {
+				UIWebView *localWebView = (UIWebView*)self.webView;
+				dispatch_async(dispatch_get_main_queue(), ^{
+					[localWebView stringByEvaluatingJavaScriptFromString:jsStatement];
+				});
 			}
 		}
 	}

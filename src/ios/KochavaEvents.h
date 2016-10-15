@@ -13,6 +13,7 @@
 
 - (void)initKochava:(CDVInvokedUrlCommand*)args;
 - (void)TrackEvent:(CDVInvokedUrlCommand*)args;
+- (void)TrackEventWithReceipt:(CDVInvokedUrlCommand*)args;
 - (void)SpatialEvent:(CDVInvokedUrlCommand*)args;
 - (void)DeeplinkEvent:(CDVInvokedUrlCommand*)args;
 - (void)EnableLogging:(CDVInvokedUrlCommand*)args;
